@@ -264,9 +264,9 @@ def corrobs(item, meters = 50, seconds = 300, pollutant = 'PM25'):
 
 
 # terminal command to connect to db and download event table and convert to csv
-# psql -h 104.196.143.165 -U multitude -d d2c_api_prod -p 5432 -o eventgt.csv -c 'select * from event;' -P format=unaligned -P tuples_only -P fieldsep=\,
-# psql -h 104.196.143.165 -U multitude -d d2c_api_prod -p 5432 -o event_meta_datagt.csv -c 'select * from event_meta_data;' -P format=unaligned -P tuples_only -P fieldsep=\,
-# psql -h 104.196.143.165 -U multitude -d d2c_api_prod -p 5432 -o event_readingsgt.csv -c 'select * from event_readings;' -P format=unaligned -P tuples_only -P fieldsep=\,
+# psql -h 104.196.143.165 -U multitude -d d2c_api_prod -p 5432 -o event.csv -c 'select * from event;' -P format=unaligned -P tuples_only -P fieldsep=\,
+# psql -h 104.196.143.165 -U multitude -d d2c_api_prod -p 5432 -o event_meta_data.csv -c 'select * from event_meta_data;' -P format=unaligned -P tuples_only -P fieldsep=\,
+# psql -h 104.196.143.165 -U multitude -d d2c_api_prod -p 5432 -o event_readings.csv -c 'select * from event_readings;' -P format=unaligned -P tuples_only -P fieldsep=\,
 # psql -h <host_ip> -U <username> -d <database> -p <port> -o <output_file_path> -c '<query>' -P format=unaligned -P tuples_only -P fieldsep=\,
 terriers = ['Terrier-B110','Terrier-B11E','Terrier-B037','Terrier-B04F',
     'Terrier-B115','Terrier-B122','Terrier-B12D','Terrier-B124','Terrier-B035',
