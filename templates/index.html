@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>L.D3SvgOverlay: Leaflet + D3, simple example</title>
+
+    <style type="text/css">
+        html { height: 100% }
+        body { height: 100%; margin: 0; padding: 0 }
+        #map-canvas { height: 100% }
+    </style>
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css'
+    	rel='stylesheet' type='text/css'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+</head>
+<body>
+  <div id="map-canvas"></div>
+  <!-- <h1> Where do you want to see? </h1> -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.9/d3.min.js"></script>
+<script src="L.D3SvgOverlay.min.js"></script>
+<script>
+d3.json("/city/<county>", function (obj) {
+  var c = 0;
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) ++c;
+  }
+  return c;
+})
+</script>
+<script>
+
+var map = L.map("map-canvas",{center:[0,0],zoom:2});
+L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png?{foo}', {foo: 'bar'}).addTo(map);
+
+L.marker([40,-73]).addTo(map)
+  .bindPopup('<a href="nyc">New York, NY</>')
+
+L.marker([40,-105]).addTo(map)
+  .bindPopup('<a href="boulder">Boulder, CO</>')
+
+L.marker([39.58,-105.26]).addTo(map)
+  .bindPopup('<a href="jeffco">Jefferson County, CO</>')
+
+L.marker([-33.44,-70.59]).addTo(map)
+  .bindPopup('<a href="santiago">Santiago, Chile</>')
+
+L.marker([56.93,24.06]).addTo(map)
+  .bindPopup('<a href="riga">Riga, Latvia</>')
+
+L.marker([12.98,77.65]).addTo(map)
+  .bindPopup('<a href="bangalor">Bangalor, India</>')
+
+L.marker([58.15,8]).addTo(map)
+  .bindPopup('<a href="vest_agder">Vest-Agder, Norway</>')
+
+L.marker([38.58,-121.5]).addTo(map)
+  .bindPopup('<a href="sacremento">Sacremento, CA</>')
+
+L.marker([-33.88, 151.18]).addTo(map)
+  .bindPopup('<a href="sydney">Sydney, Australia</>')
+
+L.marker([44.99, -93.2]).addTo(map)
+  .bindPopup('<a href="ramsey">Ramsey, MN</>')
+
+L.marker([32.78,-96.81]).addTo(map)
+  .bindPopup('<a href="dallas">Dallas, TX</>')
+
+L.marker([53.4,-2.97]).addTo(map)
+  .bindPopup('<a href="liverpool">Liverpool, UK</>')
+
+L.marker([37.47,126.95]).addTo(map)
+  .bindPopup('<a href="seoul">Seoul, Korea</>')
+
+L.marker([43.44,-76.53]).addTo(map)
+  .bindPopup('<a href="oswego">Oswego, NY</>')
+
+L.marker([45.09,25.47]).addTo(map)
+  .bindPopup('<a href="dambovita">Dambovita, Romania</>')
+
+L.marker([44.28,28.62]).addTo(map)
+  .bindPopup('<a href="constanta">Constanta, Romania</>')
+
+L.marker([42.66,21.16]).addTo(map)
+  .bindPopup('<a href="komuna">Komuna e Prishtines, Kosovo</>')
+
+L.marker([47.6,-122.33]).addTo(map)
+  .bindPopup('<a href="king">King, WA</>')
+
+L.marker([42.5,-90.69]).addTo(map)
+  .bindPopup('<a href="dubuque">Dubuque, IA</>')
+
+L.marker([30.29, -97.73]).addTo(map)
+  .bindPopup('<a href="travis">Austin, TX</>')
+
+L.marker([41.67,-91.54]).addTo(map)
+  .bindPopup('<a href="johnson">Olathe, KS</>')
+
+L.marker([32.3,-110.86]).addTo(map)
+  .bindPopup('<a href="pima">Tuscon, AZ</>')
+
+L.marker([51.48,-0.14]).addTo(map)
+  .bindPopup('<a href="london">London, UK</>')
+
+L.marker([45.19, 5.71]).addTo(map)
+  .bindPopup('<a href="grenoble">Grenoble, France</>')
+
+L.marker([12.12,-86.27]).addTo(map)
+  .bindPopup('<a href="managua">Managua, Nicaragua</>')
+
+L.marker([38.91,-77.13]).addTo(map)
+  .bindPopup('<a href="arlington">Washington, DC</>')
+
+L.marker([52.51, 13.39]).addTo(map)
+  .bindPopup('<a href="berlin">Berlin, Germany</>')
+
+L.marker([40.01,-75.1]).addTo(map)
+  .bindPopup('<a href="philly">Philadelphia, PA</>')
+
+L.marker([35.32,-80.78]).addTo(map)
+  .bindPopup('<a href="mecklenburg">Charlotte, NC</>')
+
+L.marker([33.46,-118.32]).addTo(map)
+  .bindPopup('<a href="la">Los Angeles, CA</>')
+
+L.marker([58.26,8.34]).addTo(map)
+  .bindPopup('<a href="lillesand">Lillesand, Norway</>')
+
+L.marker([37.81,-122.23]).addTo(map)
+  .bindPopup('<a href="alemeda">Oakland, CA</>')
+
+L.marker([35.91,-79.06]).addTo(map)
+  .bindPopup('<a href="orange">Durham, NC</>')
+
+L.marker([25.75,-80.25]).addTo(map)
+  .bindPopup('<a href="miami">Miami, FL</>')
+
+L.marker([-38.1,147.08]).addTo(map)
+  .bindPopup('<a href="shire">Shire of Wellington, Australia</>')
+
+L.marker([53.57,147.08]).addTo(map)
+  .bindPopup('<a href="edmonton">Edmonton, Canada</>')
+
+L.marker([24.32,-3.25]).addTo(map)
+  .bindPopup('<a href="adrar">Adrar, Algeria</>')
+
+L.marker([44.46,-93.16]).addTo(map)
+  .bindPopup('<a href="rice">Rice, MN</>')
+
+L.marker([-27.49,153.06]).addTo(map)
+  .bindPopup('<a href="brisbane">Brisbane, Australia</>')
+
+L.marker([-38.23,146.41]).addTo(map)
+  .bindPopup('<a href="latrobe">Latrobe, Australia</>')
+
+L.marker([44.44,26.09]).addTo(map)
+  .bindPopup('<a href="becuresti">Bucuresti, Romania</>')
+
+L.marker([39.22,-84.54]).addTo(map)
+  .bindPopup('<a href="hamilton">Hamilton, OH</>')
+
+L.marker([-27.3,151.7]).addTo(map)
+  .bindPopup('<a href="qld">QLD, Australia</>')
+
+// var cities = [];
+// var citiesOverlay = L.d3SvgOverlay(function(sel,proj){
+//
+//   var minLogPop = Math.log2(d3.min(cities,function(d){return d.population;}));
+//   var citiesUpd = sel.selectAll('circle').data(cities);
+//   citiesUpd.enter()
+//     .append('circle')
+//     .attr('r',function(d){return Math.log2(d.population) - minLogPop + 2;})
+//     .attr('cx',function(d){return proj.latLngToLayerPoint(d.latLng).x;})
+//     .attr('cy',function(d){return proj.latLngToLayerPoint(d.latLng).y;})
+//     .attr('stroke','black')
+//     .attr('stroke-width',1)
+//     .attr('fill',function(d){return (d.place == 'city') ? "red" : "blue";});
+// });
+//
+// d3.csv("swiss-cities.csv",function(data){
+//   cities = data.map(function(d){
+//     d.latLng = [+d.lat,+d.lng];
+//     d.population = (d.population == '') ? 2000 : +d.population; //NAs
+//     return d;
+//   });
+//   citiesOverlay.addTo(map);
+// });
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,438 @@
+<!-- general map overlay: https://github.com/jeffkaufman/apartment_prices -->
+<!-- time slider from: https://gist.github.com/kosso/1118840 -->
+
+<!-- Write your comments here -->
+<!--
+
+variables need to initialize with
+dates
+poll
+min_lon
+max_lon
+min_lat
+max_lot
+mean_lat
+mean_lon
+
+
+ -->
+
+ <!--
+    buttons along top to request variables for the map
+    time slider
+-->
+
+
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>NYC Pollution</title>
+        <meta name=viewport content="initial-scale=1.0, user-scalable=no"/>
+        <script type='text/javascript'>window.mod_pagespeed_start = Number(new Date());</script>
+        <style type="text/css">
+            html{
+                height:100%
+            }
+            body{
+                height:100%;
+                margin:0;
+                padding:0
+            }
+            #map_canvas{
+                height:100%
+            }
+            #legend{
+                position:absolute;
+                top:10px;
+                right:10px;
+                margin:auto;
+                background:#fff;
+                border-style:solid;
+                border-width:1px;
+                padding:2px;
+            }
+            td{
+                line-height:100%
+            }
+            #map-loading{
+                position:absolute;
+                z-index:-1
+            }
+            #wrapper {
+                width: 100%;
+                position: absolute;
+                left:0;
+                right:0;
+                min-width: 100%;
+                margin-top: 40px;
+                margin-bottom: 0px;
+                margin-right: 0px;
+                marign-left: auto;
+                background: rgba(255,255,255,0.9);
+                font-size: 1em;
+            }
+            /*#bar {
+                width:200px;
+                height:25px;
+                border:1px solid black;
+                position:relative;
+                top:10px;
+                left:10px;
+            }*/
+            #slider {
+                width:0%;
+                height:100%;
+                background-color:red;
+                top:0px; left:0px;
+                position:absolute;
+                cursor:pointer; }
+            #info {
+                width:200px;
+                height:25px;
+                border:1px solid black;
+            }
+        </style>
+
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7oyqwSvEBpy5ZCxBJoL_XRwioF9i4ZDY"></script>
+        <script type="text/javascript">
+
+            poll = '{{poll}}'
+            console.log(poll)
+
+            var dates_available = []
+            {% for d in dates %}
+                dates_available.push('{{d}}');
+            {% endfor %}
+            console.log(dates_available);
+
+            var map_names_available = []
+            {% for n in map_names %}
+                map_names_available.push('{{n}}');
+            {% endfor %}
+            console.log(map_names_available);
+
+            var zoomit;
+            {% if loc=='DC' %}
+                zoomit = 11
+            {% elif loc=='DEN' %}
+                zoomit = 11
+            {% else %}
+                zoomit = 12
+            {% endif %}
+            console.log(zoomit);
+
+            // center of NYC
+            var mean_lon = '{{mean_lon}}'
+            var mean_lat = '{{mean_lat}}'
+            // {% if loc=='DC' %}
+            //     mean_lon = -77.009003
+            //     mean_lat = 38.889931
+            // {% elif loc=='DEN' %}
+            //     mean_lon = 	-104.991531
+            //     mean_lat = 39.742043
+            // {% endif %}
+
+
+            var overlay=null;
+            var map;
+            var current_date_index;
+            var swBound=new google.maps.LatLng({{min_lat}}, {{min_lon}});
+            var neBound=new google.maps.LatLng({{max_lat}} , {{max_lon}});
+            // var swBound=new google.maps.LatLng(40.638, -74.02);
+            // var neBound=new google.maps.LatLng(40.808 , -73.91);
+            var currentOverlayImg;
+            var legend = null;
+
+            TQOverlay.prototype=new google.maps.OverlayView();
+
+            function initialize(){
+                //slider
+                // bar = document.getElementById('bar');
+                // slider = document.getElementById('slider');
+                // info = document.getElementById('info');
+                // bar.addEventListener('mousedown', startSlide, false);
+                // bar.addEventListener('mouseup', stopSlide, false);
+
+                //maps
+                var latlng=new google.maps.LatLng(mean_lat,mean_lon);
+                var myOptions={
+                    zoom:zoomit,
+                    center:latlng,
+                    mapTypeId:google.maps.MapTypeId.SATELLITE //ROADMAP
+                };
+
+                map=new google.maps.Map(document.getElementById("map_canvas"),myOptions);
+                google.maps.event.addListener(map,'click',function(e){
+                    var loc=e.latLng;
+                    var latfrac=(neBound.lat()-loc.lat())/(neBound.lat()-swBound.lat());
+                    var lngfrac=(neBound.lng()-loc.lng())/(neBound.lng()-swBound.lng());
+                    if(latfrac<0 || lngfrac<0 || latfrac>=1 || lngfrac>=1){
+                        return;
+                    }
+                    var rendersize=500;
+                    var x=(1-lngfrac)*rendersize;
+                    var y=latfrac*rendersize;
+                    var canvas=document.createElement('canvas');
+                    canvas.width=rendersize;
+                    canvas.height=rendersize;
+                    ctx=canvas.getContext('2d');
+                    ctx.drawImage(currentOverlayImg,0,0,rendersize,rendersize);
+                    var pixelData=ctx.getImageData(x,y,1,1).data;
+                    var r=pixelData[0];
+                    var g=pixelData[1];
+                    var b=pixelData[2];
+                    function toHex(c){
+                        var hex=c.toString(16).toUpperCase();
+                        return hex.length==1?"0"+hex:hex;
+                    }
+                    var hexycolor="#"+toHex(r)+toHex(g)+toHex(b);
+                });
+
+                var date_selected=false;
+
+                if(window.location.hash.length>5){
+                    var fragment=window.location.hash.split('#')[1]
+                    var date=fragment
+                }
+
+                for(var i=0; i<dates_available.length && !date_selected; i++){
+                    if(dates_available[i]==date){
+                        selectDate(i);
+                        date_selected=true;
+                    }
+                }
+
+                if(!date_selected){
+                    selectDate(dates_available.length-1);
+                }
+            }
+
+            var bar;
+            var slider;
+            function startSlide(event){
+            	var set_perc = ((((event.clientX - bar.offsetLeft) / bar.offsetWidth)).toFixed(2));
+            	info.innerHTML = 'start' + set_perc + '%';
+            	bar.addEventListener('mousemove', moveSlide, false);
+            	slider.style.width = (set_perc * 100) + '%';
+            }
+            function moveSlide(event){
+            	var set_perc = ((((event.clientX - bar.offsetLeft) / bar.offsetWidth)).toFixed(2));
+            	info.innerHTML = 'moving : ' + set_perc + '%';
+            	slider.style.width = (set_perc * 100) + '%';
+            }
+            function stopSlide(event){
+            	var set_perc = ((((event.clientX - bar.offsetLeft) / bar.offsetWidth)).toFixed(2));
+            	info.innerHTML = 'done : ' + set_perc + '%';
+            	bar.removeEventListener('mousemove', moveSlide, false);
+            	slider.style.width = (set_perc * 100) + '%';
+            }
+
+            function selectDate(date_index){
+                current_date_index=date_index;
+                updateMapImage();
+                setNavigationEnabledness();
+                updateHash();
+            }
+
+            function updateHash(){
+                window.location.hash=dates_available[current_date_index];
+            }
+
+            function earlier(){
+                if(current_date_index>0){
+                    selectDate(current_date_index-1);
+                }
+            }
+
+            function later(){
+                if(current_date_index<dates_available.length-1){
+                    selectDate(current_date_index+1);
+                }
+            }
+
+            function setNavigationEnabledness(){
+                document.getElementById("earlier").disabled=current_date_index<=0;
+                document.getElementById("later").disabled=current_date_index>=dates_available.length-1;
+            }
+
+            function roundTen(n){
+                return Math.round(Number(n)/10000)*10000;
+            }
+
+            function fetch(url,callback){
+                var xhr=new XMLHttpRequest();
+                xhr.onreadystatechange=function(){
+                    if(xhr.readyState==4&&xhr.status==200){
+                        callback(xhr.responseText);
+                    }
+                };
+                xhr.open("GET",url,true);
+                xhr.send();
+            }
+
+
+            function getPoll() {
+                var obj = document.getElementById("selectPoll");
+                document.getElementById("demo").innerHTML =
+                obj.options[obj.selectedIndex].text;
+            }
+
+            function updateMapImage(){
+                var date=dates_available[current_date_index];
+                var image_name=dates_available[current_date_index];
+                var bounds=new google.maps.LatLngBounds(swBound,neBound);
+                // var srcImage="get_map?city="+"New_York_County"+"&poll="+"PM25"+"&date="+"2016-7-18";
+                var srcImage="get_map?city="+"New_York_County"+"&poll="+poll+"&date="+date;
+                console.log(srcImage)
+                if(overlay!=null){
+                    overlay.setMap(null);
+                }
+                overlay=new TQOverlay(bounds,srcImage,map);
+                var span=document.getElementById("dateshown");
+                while(span.firstChild){
+                    span.removeChild(span.firstChild);
+                }
+                span.appendChild(document.createTextNode(date));
+            }
+
+            function TQOverlay(bounds,image,map){
+                this.bounds_=bounds;
+                this.image_=image;
+                this.map_=map;
+                this.div_=null;
+                this.setMap(map);
+            }
+
+            TQOverlay.prototype.onAdd=function(){
+                var div=document.createElement('DIV');
+                div.style.border="none";
+                div.style.borderWidth="0px";
+                div.style.position="absolute";
+                currentOverlayImg=document.createElement("img");
+                currentOverlayImg.src=this.image_;
+                currentOverlayImg.style.width="100%";
+                currentOverlayImg.style.height="100%";
+                currentOverlayImg.style.opacity=.9;
+                currentOverlayImg.style.filter='alpha(opacity=90)';
+                div.appendChild(currentOverlayImg);
+                this.div_=div;
+                var panes=this.getPanes();
+                panes.overlayLayer.appendChild(div);
+            }
+
+            TQOverlay.prototype.draw=function(){
+                var overlayProjection=this.getProjection();
+                var sw=overlayProjection.fromLatLngToDivPixel(this.bounds_.getSouthWest());
+                var ne=overlayProjection.fromLatLngToDivPixel(this.bounds_.getNorthEast());
+                var div=this.div_;
+                div.style.left=sw.x+'px';
+                div.style.top=ne.y+'px';
+                div.style.width=(ne.x-sw.x)+'px';
+                div.style.height=(sw.y-ne.y)+'px';
+            }
+
+            TQOverlay.prototype.onRemove=function(){
+                this.div_.parentNode.removeChild(this.div_);
+                this.div_=null;
+            }
+        </script>
+
+    </head>
+
+    <body onload="initialize()">
+      <div id=map-loading>Loading...</div>
+      <div id=map_canvas style="width:100%; height:100%"></div>
+
+      <!-- my unsuccessful first attempt -->
+      <!-- <img src="./images/PM25_legend.jpg" alt = 'Legend' style = "width:100; height:100;"> -->
+      <!-- <img src='get_legend' id='legend'/> -->
+      <!--  Victoria's legend made dynamically-->
+      <div id=legend>
+        <table>
+            <tr><td valign=top>
+              <img src='get_legend'/>
+                <!-- <div class=var_values>
+                <font color="#FF0000">&#9608;</font> $<span class=key>loading...</span>+<br>
+                <font color="#FF5B00">&#9608;</font> $<span class=key>loading...</span>+<br>
+                <font color="#FF7F00">&#9608;</font> $<span class=key>loading...</span>+<br>
+                <font color="#FFAB00">&#9608;</font> $<span class=key>loading...</span>+<br>
+                <font color="#FFD000">&#9608;</font> $<span class=key>loading...</span>+<br>
+                <font color="#FFF000">&#9608;</font> $<span class=key>loading...</span>+<br>
+                <font color="#FFFF00">&#9608;</font> $<span class=key>loading...</span>+<br>
+                <font color="#DAFF00">&#9608;</font> $<span class=key>loading...</span>+<br>
+                <font color="#B0FF00">&#9608;</font> $<span class=key>loading...</span>+<br>
+                <font color="#80FF00">&#9608;</font> $<span class=key>loading...</span>+<br>
+                <font color="#00FF00">&#9608;</font> $<span class=key>loading...</span>+<br>
+                <font color="#00FFFF">&#9608;</font> $<span class=key>loading...</span>+<br>
+                <font color="#00F0FF">&#9608;</font> $<span class=key>loading...</span>+<br>
+                <font color="#00D5FF">&#9608;</font> $<span class=key>loading...</span>+<br>
+                <font color="#00ABFF">&#9608;</font> $<span class=key>loading...</span>+<br>
+                <font color="#007FFF">&#9608;</font> $<span class=key>loading...</span>+<br>
+                <font color="#0056FF">&#9608;</font> $<span class=key>loading...</span>+<br>
+                <font color="#0000FF">&#9608;</font> $<span id=keyfinal>loading...</span>-<br>
+                </div> -->
+            <!-- <script type="text/javascript">
+            setLegend();
+            </script> -->
+            <tr><td valign=middle>
+
+              <!-- TIME BUTTONS -->
+              <button id=earlier onclick="earlier()">&lt;</button>
+              <span id=dateshown></span>
+              <button id=later onclick="later()">&gt;</button>
+              <br><br>
+              <form>
+                <select id="SelectPoll">
+                  <option>PM 2.5</option>
+                  <option>NO</option>
+                  <option>CO2</option>
+                  <option>CO</option>
+                </select>
+                <br><br>
+            <tr><td valign=bottom>
+              <table style="width:100%">
+                <tr>
+                  <th>Average PM 2.5 in NYC</th>
+                </tr>
+                <tr>
+                  <td>{{avg_PM25}} ug/m^3</td>
+                </tr>
+                <tr>
+                  <th>Average NO in NYC</th>
+                </tr>
+                <tr>
+                  <td>{{avg_NO}} ppb</td>
+                </tr>
+                <tr>
+                  <th>Average CO2 in NYC</th>
+                </tr>
+                <tr>
+                  <td>{{avg_CO2}} ppm</td>
+                </tr>
+                <tr>
+                  <th>Average CO in NYC</th>
+                </tr>
+                <tr>
+                  <td>{{avg_CO}} ppm</td>
+                </tr>
+
+            <!-- Summary statistics -->
+        </table>
+
+          <!-- HOME BUTTON -->
+          <tr><td>
+              <center><a href="/">home</a></center>
+      </div>
+
+    <!-- <div id="wrapper"> -->
+        <!-- <div id='bar'> -->
+            <!-- <div id='slider'></div> -->
+        <!-- </div> -->
+        <!-- <br /> -->
+        <!-- <div id='info'>info</div> -->
+    <!-- </div> -->
+
+    </body>
+</html>
