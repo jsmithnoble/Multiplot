@@ -754,4 +754,4 @@ def philly():
 if __name__ == '__main__':
     event = pickle.load(open('event.pkl','rb'))
 
-    app.run(host='0.0.0.0', port = 8000, debug = True)
+    app.run(host='0.0.0.0', port = 8000, debug = False)
