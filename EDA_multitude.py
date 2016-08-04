@@ -316,7 +316,7 @@ def make_visit_plots(cities, pollutants):
     path = os.getenv('PATH')
     path += ":/Applications/VisIt.app/Contents/Resources/bin/"
     n = 1
-    for city in ['New York County']:
+    for city in cities:
         min_lon = str(round(cities[city]['min_lon'],4))
         max_lon = str(round(cities[city]['max_lon'],4))
         min_lat = str(round(cities[city]['min_lat'],4))
@@ -393,7 +393,7 @@ def format_visit_plots():
     f_path1 = '/Users/jakenoble/DSI/multiplot/plots/visIt'
     f_path2 = '/Users/jakenoble/DSI/multiplot/images'
     n = 1
-    for city in cities:
+    for city in ['New York County']:
         for poll in ['PM25','CO','CO2','NO']:
             for date in cities[city]['dates']:
                 call(['open','{}/{}/{}/{}_{}_0000.png'.format(f_path1,city.replace(' ','_'),poll,poll,date)])
@@ -420,4 +420,4 @@ if __name__ == '__main__':
     # city_center = [['New_York_County',(40.73,-73.895)]]
     # make_hour_averages_plot(cities['New York County']['df'])
     # make_visit_plots(cities = cities, pollutants = ['CO','CO2','NO','PM25'])
-    # format_visit_plots()
+    format_visit_plots()
