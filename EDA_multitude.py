@@ -14,9 +14,6 @@ from sklearn.cluster import KMeans, DBSCAN, AffinityPropagation
 from sklearn.cross_validation import KFold
 from geopy.distance import vincenty
 import multiprocessing
-import seaborn as sbs
-# import plotly.plotly as py
-# import plotly.tools as tls
 from subprocess import call
 
 
@@ -393,8 +390,8 @@ def format_visit_plots():
     f_path1 = '/Users/jakenoble/DSI/multiplot/plots/visIt'
     f_path2 = '/Users/jakenoble/DSI/multiplot/images'
     n = 1
-    for city in ['New York County']:
-        for poll in ['PM25','CO','CO2','NO']:
+    for city in cities:
+        for poll in ['PM25']:#,'CO','CO2','NO']:
             for date in cities[city]['dates']:
                 call(['open','{}/{}/{}/{}_{}_0000.png'.format(f_path1,city.replace(' ','_'),poll,poll,date)])
                 if not os.path.exists('{}/{}/{}'.format(f_path2,city.replace(' ','_'),poll)):
@@ -419,5 +416,7 @@ if __name__ == '__main__':
     calculate_city_stats(metrics, cities)
     # city_center = [['New_York_County',(40.73,-73.895)]]
     # make_hour_averages_plot(cities['New York County']['df'])
-    # make_visit_plots(cities = cities, pollutants = ['CO','CO2','NO','PM25'])
-    format_visit_plots()
+    # make_visit_plots(cities = cities, pollutants = ['PM25'])
+    # format_visit_plots()
+call(['open','{}/{}/{}/{}_{}_0000.png'.format('/Users/jakenoble/DSI/multiplot/plots/visIt','New_York_County','PM25','PM25','2016-07-01')])
+call(['screencapture','-T','1','-R','175,121,645,623', '{}/{}/{}/{}_{}.png'.format('/Users/jakenoble/DSI/multiplot/images','New_York_County','PM25','PM25','2016-07-01')])

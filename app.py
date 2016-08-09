@@ -65,6 +65,7 @@ def get_image():
 @app.route("/nyc")
 def ny():
     return render_template("mapplot.html",
+        city='New_York_County',
         dates=cities['New York County']['dates'],
         poll="PM25",
         min_lon=cities["New York County"]['min_lon'],
@@ -81,6 +82,7 @@ def ny():
 @app.route("/boulder")
 def boulder():
     return render_template("mapplot.html",
+        city = 'Boulder_County',
         dates=cities['Boulder County']['dates'],
         poll="PM25",
         min_lon=cities["Boulder County"]['min_lon'],
@@ -97,6 +99,7 @@ def boulder():
 @app.route("/jeffco")
 def jeffco():
     return render_template("mapplot.html",
+        city = 'Jefferson_County',
         dates=cities['Jefferson County']['dates'],
         poll="PM25",
         min_lon=cities["Jefferson County"]['min_lon'],
@@ -114,7 +117,8 @@ def jeffco():
 @app.route("/santiago")
 def santiago():
     return render_template("mapplot.html",
-        dates=cities['Jefferson County']['dates'],
+        city = 'Provincia_de_Santiago',
+        dates=cities["Provincia de Santiago"]['dates'],
         poll="PM25",
         min_lon=cities["Provincia de Santiago"]['min_lon'],
         max_lon=cities['Provincia de Santiago']['max_lon'],
@@ -130,6 +134,7 @@ def santiago():
 @app.route("/riga")
 def riga():
     return render_template("mapplot.html",
+        city = 'Riga',
         dates=cities['Riga']['dates'],
         poll="PM25",
         min_lon=cities["Riga"]['min_lon'],
@@ -146,6 +151,7 @@ def riga():
 @app.route("/bangalor")
 def bangalor():
     return render_template("mapplot.html",
+        city = 'Bangalore_Urban',
         dates=cities['Bangalore Urban']['dates'],
         poll="PM25",
         min_lon=cities["Bangalore Urban"]['min_lon'],
@@ -162,6 +168,7 @@ def bangalor():
 @app.route("/vest_agder")
 def vest_adger():
     return render_template("mapplot.html",
+        city = 'Vest-Agder',
         dates=cities['Vest-Agder']['dates'],
         poll="PM25",
         min_lon=cities["Vest-Agder"]['min_lon'],
@@ -178,6 +185,7 @@ def vest_adger():
 @app.route("/sacremento")
 def sacremento():
     return render_template("mapplot.html",
+        city = 'Sacramento_County',
         dates=cities['Sacramento County']['dates'],
         poll="PM25",
         min_lon=cities["Sacramento County"]['min_lon'],
@@ -191,9 +199,10 @@ def sacremento():
         avg_CO2=round(cities['Sacramento County']['avg_CO2'],2),
         avg_PM25=round(cities['Sacramento County']['avg_PM25'],2))
 
-@app.route("/sydeny")
+@app.route("/sydney")
 def sydney():
     return render_template("mapplot.html",
+        city = 'Sydney',
         dates=cities['Sydney']['dates'],
         poll="PM25",
         min_lon=cities["Sydney"]['min_lon'],
@@ -210,6 +219,7 @@ def sydney():
 @app.route("/ramsey")
 def ramsey():
     return render_template("mapplot.html",
+        city = 'Ramsey_County',
         dates=cities['Ramsey County']['dates'],
         poll="PM25",
         min_lon=cities["Ramsey County"]['min_lon'],
@@ -226,6 +236,7 @@ def ramsey():
 @app.route("/dallas")
 def dallas():
     return render_template("mapplot.html",
+        city = 'Dallas_County',
         dates=cities['Dallas County']['dates'],
         poll="PM25",
         min_lon=cities["Dallas County"]['min_lon'],
@@ -242,6 +253,7 @@ def dallas():
 @app.route("/liverpool")
 def liverpool():
     return render_template("mapplot.html",
+        city = 'Liverpool',
         dates=cities['Liverpool']['dates'],
         poll="PM25",
         min_lon=cities["Liverpool"]['min_lon'],
@@ -258,6 +270,7 @@ def liverpool():
 @app.route("/seoul")
 def seoul():
     return render_template("mapplot.html",
+        city = 'Seoul',
         dates=cities['Seoul']['dates'],
         poll="PM25",
         min_lon=cities["Seoul"]['min_lon'],
@@ -274,22 +287,24 @@ def seoul():
 @app.route("/oswego")
 def oswego():
     return render_template("mapplot.html",
-        dates=cities['Oswego']['dates'],
+        city='Oswego_County',
+        dates=cities['Oswego County']['dates'],
         poll="PM25",
-        min_lon=cities["Oswego"]['min_lon'],
-        max_lon=cities['Oswego']['max_lon'],
-        min_lat=cities["Oswego"]['min_lat'],
-        max_lat=cities['Oswego']['max_lat'],
-        mean_lat=cities['Oswego']['avg_lat'],
-        mean_lon=cities['Oswego']['avg_lon'],
-        avg_NO=round(cities['Oswego']['avg_NO'],2),
-        avg_CO=round(cities['Oswego']['avg_CO'],2),
-        avg_CO2=round(cities['Oswego']['avg_CO2'],2),
-        avg_PM25=round(cities['Oswego']['avg_PM25'],2))
+        min_lon=cities["Oswego County"]['min_lon'],
+        max_lon=cities['Oswego County']['max_lon'],
+        min_lat=cities["Oswego County"]['min_lat'],
+        max_lat=cities['Oswego County']['max_lat'],
+        mean_lat=cities['Oswego County']['avg_lat'],
+        mean_lon=cities['Oswego County']['avg_lon'],
+        avg_NO=round(cities['Oswego County']['avg_NO'],2),
+        avg_CO=round(cities['Oswego County']['avg_CO'],2),
+        avg_CO2=round(cities['Oswego County']['avg_CO2'],2),
+        avg_PM25=round(cities['Oswego County']['avg_PM25'],2))
 
 @app.route("/dambovita")
 def dambovita():
     return render_template("mapplot.html",
+        city = 'Dambovita',
         dates=cities['Dambovita']['dates'],
         poll="PM25",
         min_lon=cities["Dambovita"]['min_lon'],
@@ -303,9 +318,10 @@ def dambovita():
         avg_CO2=round(cities['Dambovita']['avg_CO2'],2),
         avg_PM25=round(cities['Dambovita']['avg_PM25'],2))
 
-@app.route("/Constanta")
+@app.route("/constanta")
 def constanta():
     return render_template("mapplot.html",
+        city = 'Constanta',
         dates=cities['Constanta']['dates'],
         poll="PM25",
         min_lon=cities["Constanta"]['min_lon'],
@@ -322,6 +338,7 @@ def constanta():
 @app.route("/komuna")
 def komuna():
     return render_template("mapplot.html",
+        city = 'Komuna_e_Prishtines',
         dates=cities['Komuna e Prishtines']['dates'],
         poll="PM25",
         min_lon=cities["Komuna e Prishtines"]['min_lon'],
@@ -338,6 +355,7 @@ def komuna():
 @app.route("/king")
 def king():
     return render_template("mapplot.html",
+        city = 'King_County',
         dates=cities['King County']['dates'],
         poll="PM25",
         min_lon=cities["King County"]['min_lon'],
@@ -354,6 +372,7 @@ def king():
 @app.route("/dubuque")
 def dubuque():
     return render_template("mapplot.html",
+        city = 'Dubuque_County',
         dates=cities['Dubuque County']['dates'],
         poll="PM25",
         min_lon=cities["Dubuque County"]['min_lon'],
@@ -370,6 +389,7 @@ def dubuque():
 @app.route("/travis")
 def travis():
     return render_template("mapplot.html",
+        city = 'Travis_County',
         dates=cities['Travis County']['dates'],
         poll="PM25",
         min_lon=cities["Travis County"]['min_lon'],
@@ -386,6 +406,7 @@ def travis():
 @app.route("/johnson")
 def johnson():
     return render_template("mapplot.html",
+        city = 'Johnson_County',
         dates=cities['Johnson County']['dates'],
         poll="PM25",
         min_lon=cities["Johnson County"]['min_lon'],
@@ -402,6 +423,7 @@ def johnson():
 @app.route("/pima")
 def pima():
     return render_template("mapplot.html",
+        city = 'Pima_County',
         dates=cities['Pima County']['dates'],
         poll="PM25",
         min_lon=cities["Pima County"]['min_lon'],
@@ -412,12 +434,13 @@ def pima():
         mean_lon=cities['Pima County']['avg_lon'],
         avg_NO=round(cities['Pima County']['avg_NO'],2),
         avg_CO=round(cities['Pima County']['avg_CO'],2),
-        avg_CO2=round(cities['SydPima Countyney']['avg_CO2'],2),
+        avg_CO2=round(cities['Pima County']['avg_CO2'],2),
         avg_PM25=round(cities['Pima County']['avg_PM25'],2))
 
 @app.route("/london")
 def london():
     return render_template("mapplot.html",
+        city = 'London',
         dates=cities['London']['dates'],
         poll="PM25",
         min_lon=cities["London"]['min_lon'],
@@ -434,6 +457,7 @@ def london():
 @app.route("/grenoble")
 def grenoble():
     return render_template("mapplot.html",
+        city = 'Grenoble',
         dates=cities['Grenoble']['dates'],
         poll="PM25",
         min_lon=cities["Grenoble"]['min_lon'],
@@ -450,7 +474,8 @@ def grenoble():
 @app.route("/managua")
 def managua():
     return render_template("mapplot.html",
-        dates=cities['SydnManagua (Municipio)ey']['dates'],
+        city = 'Managua_(Municipio)',
+        dates=cities['Managua (Municipio)']['dates'],
         poll="PM25",
         min_lon=cities["Managua (Municipio)"]['min_lon'],
         max_lon=cities['Managua (Municipio)']['max_lon'],
@@ -466,6 +491,7 @@ def managua():
 @app.route("/arlington")
 def arlington():
     return render_template("mapplot.html",
+        city = 'Arlington_County',
         dates=cities['Arlington County']['dates'],
         poll="PM25",
         min_lon=cities["Arlington County"]['min_lon'],
@@ -482,6 +508,7 @@ def arlington():
 @app.route("/berlin")
 def berlin():
     return render_template("mapplot.html",
+        city = 'Berlin',
         dates=cities['Berlin']['dates'],
         poll="PM25",
         min_lon=cities["Berlin"]['min_lon'],
@@ -498,6 +525,7 @@ def berlin():
 @app.route("/mecklenburg")
 def mecklenburg():
     return render_template("mapplot.html",
+        city = 'Mecklenburg_County',
         dates=cities['Mecklenburg County']['dates'],
         poll="PM25",
         min_lon=cities["Mecklenburg County"]['min_lon'],
@@ -514,6 +542,7 @@ def mecklenburg():
 @app.route("/la")
 def la():
     return render_template("mapplot.html",
+        city = 'Los_Angeles_County',
         dates=cities['Los Angeles County']['dates'],
         poll="PM25",
         min_lon=cities["Los Angeles County"]['min_lon'],
@@ -530,6 +559,7 @@ def la():
 @app.route("/lillesand")
 def lillesand():
     return render_template("mapplot.html",
+        city = 'Lillesand',
         dates=cities['Lillesand']['dates'],
         poll="PM25",
         min_lon=cities["Lillesand"]['min_lon'],
@@ -546,6 +576,7 @@ def lillesand():
 @app.route("/alameda")
 def alameda():
     return render_template("mapplot.html",
+        city = 'Alameda_County',
         dates=cities['Alameda County']['dates'],
         poll="PM25",
         min_lon=cities["Alameda County"]['min_lon'],
@@ -562,6 +593,7 @@ def alameda():
 @app.route("/orange")
 def orange():
     return render_template("mapplot.html",
+        city = 'Orange_County',
         dates=cities['Orange County']['dates'],
         poll="PM25",
         min_lon=cities["Orange County"]['min_lon'],
@@ -578,6 +610,7 @@ def orange():
 @app.route("/miami")
 def miami():
     return render_template("mapplot.html",
+        city = 'Miami-Dade_County',
         dates=cities['Miami-Dade County']['dates'],
         poll="PM25",
         min_lon=cities["Miami-Dade County"]['min_lon'],
@@ -594,6 +627,7 @@ def miami():
 @app.route("/shire")
 def shire():
     return render_template("mapplot.html",
+        city = 'Shire_of_Wellington',
         dates=cities['Shire of Wellington']['dates'],
         poll="PM25",
         min_lon=cities["Shire of Wellington"]['min_lon'],
@@ -610,6 +644,7 @@ def shire():
 @app.route("/edmonton")
 def edmonton():
     return render_template("mapplot.html",
+        city = 'Edmonton',
         dates=cities['Edmonton']['dates'],
         poll="PM25",
         min_lon=cities["Edmonton"]['min_lon'],
@@ -626,6 +661,7 @@ def edmonton():
 @app.route("/adrar")
 def adrar():
     return render_template("mapplot.html",
+        city = 'Adrar',
         dates=cities['Adrar']['dates'],
         poll="PM25",
         min_lon=cities["Adrar"]['min_lon'],
@@ -642,6 +678,7 @@ def adrar():
 @app.route("/rice")
 def rice():
     return render_template("mapplot.html",
+        city = 'Rice_County',
         dates=cities['Rice County']['dates'],
         poll="PM25",
         min_lon=cities["Rice County"]['min_lon'],
@@ -658,6 +695,7 @@ def rice():
 @app.route("/brisbane")
 def brisbane():
     return render_template("mapplot.html",
+        city = 'Brisbane',
         dates=cities['Brisbane']['dates'],
         poll="PM25",
         min_lon=cities["Brisbane"]['min_lon'],
@@ -674,6 +712,7 @@ def brisbane():
 @app.route("/latrobe")
 def latrobe():
     return render_template("mapplot.html",
+        city = 'Latrobe_City',
         dates=cities['Latrobe City']['dates'],
         poll="PM25",
         min_lon=cities["Latrobe City"]['min_lon'],
@@ -690,6 +729,7 @@ def latrobe():
 @app.route("/bucuresti")
 def bucuresti():
     return render_template("mapplot.html",
+        city = 'Bucuresti',
         dates=cities['Bucuresti']['dates'],
         poll="PM25",
         min_lon=cities["Bucuresti"]['min_lon'],
@@ -706,6 +746,7 @@ def bucuresti():
 @app.route("/hamilton")
 def hamilton():
     return render_template("mapplot.html",
+        city = 'Hamilton_County',
         dates=cities['Hamilton County']['dates'],
         poll="PM25",
         min_lon=cities["Hamilton County"]['min_lon'],
@@ -722,6 +763,7 @@ def hamilton():
 @app.route("/qld")
 def qld():
     return render_template("mapplot.html",
+        city = 'QLD',
         dates=cities['QLD']['dates'],
         poll="PM25",
         min_lon=cities["QLD"]['min_lon'],
@@ -738,6 +780,7 @@ def qld():
 @app.route("/philly")
 def philly():
     return render_template("mapplot.html",
+        city = 'Philadelphia_County',
         dates=cities['Philadelphia County']['dates'],
         poll="PM25",
         min_lon=cities["Philadelphia County"]['min_lon'],

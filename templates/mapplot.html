@@ -99,7 +99,10 @@ mean_lon
         <script type="text/javascript">
 
             poll = '{{poll}}'
-            console.log(poll)
+            console.log(poll);
+
+            city = '{{city}}'
+            console.log(city);
 
             var dates_available = []
             {% for d in dates %}
@@ -107,11 +110,24 @@ mean_lon
             {% endfor %}
             console.log(dates_available);
 
-            var map_names_available = []
-            {% for n in map_names %}
-                map_names_available.push('{{n}}');
-            {% endfor %}
-            console.log(map_names_available);
+            var min_lat = '{{min_lat}}'
+            console.log(min_lat);
+
+            var max_lat = '{{max_lat}}'
+            console.log(max_lat);
+
+            var min_lon = '{{min_lon}}'
+            console.log(min_lon);
+
+            var max_lon = '{{max_lon}}'
+            console.log(max_lon);
+
+
+            // var map_names_available = []
+            // {% for n in map_names %}
+            //     map_names_available.push('{{n}}');
+            // {% endfor %}
+            // console.log(map_names_available);
 
             var zoomit;
             {% if loc=='DC' %}
@@ -119,13 +135,16 @@ mean_lon
             {% elif loc=='DEN' %}
                 zoomit = 11
             {% else %}
-                zoomit = 12
+                zoomit = 13
             {% endif %}
             console.log(zoomit);
 
             // center of NYC
             var mean_lon = '{{mean_lon}}'
+            console.log(mean_lon);
+
             var mean_lat = '{{mean_lat}}'
+            console.log(mean_lat);
             // {% if loc=='DC' %}
             //     mean_lon = -77.009003
             //     mean_lat = 38.889931
@@ -284,7 +303,7 @@ mean_lon
                 var image_name=dates_available[current_date_index];
                 var bounds=new google.maps.LatLngBounds(swBound,neBound);
                 // var srcImage="get_map?city="+"New_York_County"+"&poll="+"PM25"+"&date="+"2016-7-18";
-                var srcImage="get_map?city="+"New_York_County"+"&poll="+poll+"&date="+date;
+                var srcImage="get_map?city="+'{{city}}'+"&poll="+poll+"&date="+date;
                 console.log(srcImage)
                 if(overlay!=null){
                     overlay.setMap(null);
@@ -382,7 +401,7 @@ mean_lon
               <button id=earlier onclick="earlier()">&lt;</button>
               <span id=dateshown></span>
               <button id=later onclick="later()">&gt;</button>
-              <br><br>
+              <!-- <br><br>
               <form>
                 <select id="SelectPoll">
                   <option>PM 2.5</option>
@@ -390,7 +409,7 @@ mean_lon
                   <option>CO2</option>
                   <option>CO</option>
                 </select>
-                <br><br>
+                <br><br> -->
             <tr><td valign=bottom>
               <table style="width:100%">
                 <tr>
