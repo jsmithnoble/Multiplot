@@ -1,12 +1,9 @@
 import pandas as pd
 import numpy as np
-import requests
-import json
 import folium
 from folium import plugins
 from time import time
-# import matplotlib.pyplot as plt
-from bs4 import BeautifulSoup
+import matplotlib.pyplot as plt
 import cPickle as pickle
 import os
 import geopy
@@ -15,6 +12,7 @@ from sklearn.cross_validation import KFold
 from geopy.distance import vincenty
 import multiprocessing
 from subprocess import call
+from visit_functions import *
 
 
 def get_data():
@@ -151,6 +149,14 @@ def get_single_device(device_id, ride_break = 15):
     data['ride'] = ride
     return data
 
+def plot_single_device_date(device_id, date):
+    data = event[event.device_id == device_id]
+    data = get_single_date(date, data)
+    mapa = folium.Map((data.lat.mean(),data.lon.mean()), zoom_start = 14)
+    coords = zip(data.lat,data.lon)
+    folium.PolyLine(coords).add_to(mapa)
+    mapa.save("plots/devices/{}_{}.html".format(device_id,date))
+
 def plot_single_device(device_id):
     '''
     INPUT device_id: string
@@ -270,14 +276,14 @@ terriers = ['Terrier-B110','Terrier-B11E','Terrier-B037','Terrier-B04F',
     'Terrier-B051','Terrier-B02F','Terrier-B125','Terrier-B038','Terrier-B121',
     'Terrier-B033','Terrier-B054','Terrier-B05B','Terrier-B02E','Terrier-B004',
     'Terrier-B03C','Terrier-B121','Terrier-B054']
-airbeams = ['AirBeam-0018961059B7','AirBeam-001896105985','AirBeam-001896105F53',
-    'AirBeam-001896106134','AirBeam-001896105574','AirBeam-00189610687D',
-    'AirBeam-001896105561','AirBeam-0018961051B6','AirBeam-001896108705',
-    'AirBeam-00189610553A','AirBeam-001896106D2D','AirBeam-001896105550',
-    'AirBeam-0018961086F4','AirBeam-00189610685A','AirBeam-001896105556',
-    'AirBeam-001896105F32','AirBeam-0018961086C4','AirBeam-001896106863',
-    'AirBeam-00189610688D','AirBeam-001896014191','AirBeam-00189610685A',
-    'AirBeam-001896105F32']
+airbeams = ['AirBeam:0018961059B7','AirBeam:001896105985','AirBeam:001896105F53',
+    'AirBeam:001896106134','AirBeam:001896105574','AirBeam:00189610687D',
+    'AirBeam:001896105561','AirBeam:0018961051B6','AirBeam:001896108705',
+    'AirBeam:00189610553A','AirBeam:001896106D2D','AirBeam:001896105550',
+    'AirBeam:0018961086F4','AirBeam:00189610685A','AirBeam:001896105556',
+    'AirBeam:001896105F32','AirBeam:0018961086C4','AirBeam:001896106863',
+    'AirBeam:00189610688D','AirBeam:001896014191','AirBeam:00189610685A',
+    'AirBeam:001896105F32']
 users = ['MB005','MB001','MB002','MB008','MB010','MB012','MB014','MB016','MB011',
     'MB004','MB007','MB009','MB003','MB006','MB013','MB015','MB017','MB018',
     'MB019','MB020','MB021','MB022']
@@ -291,39 +297,39 @@ def get_single_date(date, df):
     '''
     return df[[x.date() == pd.to_datetime(date).date() for x in df.timestamp]]
 
-def export_for_visit(df, city, poll, date):
-     data = df[['lon','lat',poll]].dropna()
-     data.columns = ["X","Y",poll]
-     data['Z'] = np.zeros(data.shape[0])
-     data = data[["X","Y","Z",poll]]
-     if not os.path.exists('data/data_for_visit/{}/{}'.format(city.replace(' ','_'),poll,poll,date)):
-         os.makedirs('data/data_for_visit/{}/{}'.format(city.replace(' ','_'),poll))
-     if not os.path.exists('plots/visit/{}/{}'.format(city.replace(' ','_'),poll,poll,date)):
-         os.makedirs('plots/visit/{}/{}'.format(city.replace(' ','_'),poll))
-     data.to_csv('data/data_for_visit/{}/{}/{}_{}.3D'.format(city.replace(' ','_'),poll,poll,date),sep = ' ', index = False)
+# def export_for_visit(df, city, poll, date):
+#      data = df[['lon','lat',poll]].dropna()
+#      data.columns = ["X","Y",poll]
+#      data['Z'] = np.zeros(data.shape[0])
+#      data = data[["X","Y","Z",poll]]
+#      if not os.path.exists('data/data_for_visit/{}/{}'.format(city.replace(' ','_'),poll,poll,date)):
+#          os.makedirs('data/data_for_visit/{}/{}'.format(city.replace(' ','_'),poll))
+#      if not os.path.exists('plots/visit/{}/{}'.format(city.replace(' ','_'),poll,poll,date)):
+#          os.makedirs('plots/visit/{}/{}'.format(city.replace(' ','_'),poll))
+#      data.to_csv('data/data_for_visit/{}/{}/{}_{}.3D'.format(city.replace(' ','_'),poll,poll,date),sep = ' ', index = False)
 
 
-def make_visit_plots(cities, pollutants):
-    '''
-    INPUT cities: a dictionary with {"city":{"df":city_df}} structure
-          pollutants: a list of strings corresponding to collumn names of city_df
-    OUTPUT None
-    creates a .png image for each date in city_df for each pollutant using visit
-    '''
-    path = os.getenv('PATH')
-    path += ":/Applications/VisIt.app/Contents/Resources/bin/"
-    n = 1
-    for city in cities:
-        min_lon = str(round(cities[city]['min_lon'],4))
-        max_lon = str(round(cities[city]['max_lon'],4))
-        min_lat = str(round(cities[city]['min_lat'],4))
-        max_lat = str(round(cities[city]['max_lat'],4))
-        for poll in pollutants:
-            for date in cities[city]['dates']:
-                export_for_visit(get_single_date(date,cities[city]['df']), city, poll, date)
-                call(['visit','-cli','-s','visit_script.py',city, poll, min_lon, max_lon, min_lat, max_lat, date], env = {'PATH' : path})
-                print "You've made %i plots" % n
-                n+=1
+# def make_visit_plots(cities, pollutants):
+#     '''
+#     INPUT cities: a dictionary with {"city":{"df":city_df}} structure
+#           pollutants: a list of strings corresponding to collumn names of city_df
+#     OUTPUT None
+#     creates a .png image for each date in city_df for each pollutant using visit
+#     '''
+#     path = os.getenv('PATH')
+#     path += ":/Applications/VisIt.app/Contents/Resources/bin/"
+#     n = 1
+#     for city in cities:
+#         min_lon = str(round(cities[city]['min_lon'],4))
+#         max_lon = str(round(cities[city]['max_lon'],4))
+#         min_lat = str(round(cities[city]['min_lat'],4))
+#         max_lat = str(round(cities[city]['max_lat'],4))
+#         for poll in pollutants:
+#             for date in cities[city]['dates']:
+#                 export_for_visit(get_single_date(date,cities[city]['df']), city, poll, date)
+#                 call(['visit','-cli','-s','visit_script.py',city, poll, min_lon, max_lon, min_lat, max_lat, date], env = {'PATH' : path})
+#                 print "You've made %i plots" % n
+#                 n+=1
 
 def make_city_dictionary(df):
     stationary_devices = ['AirBeam:001896106892','Terrier-0006667BB11C',
@@ -382,25 +388,11 @@ def make_hour_averages_plot(ny, poll = 'PM25'):
     data['gold_standard'] = gs.mean(axis = 1)
     data.columns = ['Mobile Sensors','Gold Standard']
     ax = data.plot()
-    label = ax.set_ylabel("PM 2.5 ug/m^3", fontsize = 20)
+    ylabel = ax.set_ylabel("PM 2.5 ug/m^3", fontsize = 20)
+    xlabel = ax.set_xlabel("Date July", fontsize = 20)
     title = ax.set_title("Hour Avg Mobile Sensors vs. Gold Standard in NYC", fontsize = 20)
     plt.show()
 
-def format_visit_plots():
-    f_path1 = '/Users/jakenoble/DSI/multiplot/plots/visIt'
-    f_path2 = '/Users/jakenoble/DSI/multiplot/images'
-    n = 1
-    for city in cities:
-        for poll in ['PM25']:#,'CO','CO2','NO']:
-            for date in cities[city]['dates']:
-                call(['open','{}/{}/{}/{}_{}_0000.png'.format(f_path1,city.replace(' ','_'),poll,poll,date)])
-                if not os.path.exists('{}/{}/{}'.format(f_path2,city.replace(' ','_'),poll)):
-                    os.makedirs('{}/{}/{}'.format(f_path2,city.replace(' ','_'),poll))
-                call(['screencapture','-T','1','-R','175,121,645,623', '{}/{}/{}/{}_{}.png'.format(f_path2,city.replace(' ','_'),poll,poll,date)])
-                call(['osascript', '-e', 'quit app "Preview"'])
-                print "\n made %i plots" %n
-                print '{}/{}/{}/{}_{}.png'.format(f_path2,city,poll,poll,date)
-                n+=1
 
 if __name__ == '__main__':
     # event =  get_data()
@@ -409,6 +401,9 @@ if __name__ == '__main__':
     # event.to_pickle('event.pkl')
     event = pickle.load(open('event.pkl','rb'))
 
+    ny = event[event.county == 'New York County']
+    most_common = ny.device_id.value_counts().index[0]
+    # plot_single_device(most_common)
     # Make dictionary of city: city_df pairs
     cities = make_city_dictionary(event)
 
@@ -418,5 +413,12 @@ if __name__ == '__main__':
     # make_hour_averages_plot(cities['New York County']['df'])
     # make_visit_plots(cities = cities, pollutants = ['PM25'])
     # format_visit_plots()
-call(['open','{}/{}/{}/{}_{}_0000.png'.format('/Users/jakenoble/DSI/multiplot/plots/visIt','New_York_County','PM25','PM25','2016-07-01')])
-call(['screencapture','-T','1','-R','175,121,645,623', '{}/{}/{}/{}_{}.png'.format('/Users/jakenoble/DSI/multiplot/images','New_York_County','PM25','PM25','2016-07-01')])
+    stats = pd.DataFrame(columns = ['city','PM25','devices','obs'])
+    for city in cities:
+        pm25 = cities[city]['avg_PM25']
+        obs = cities[city]['df'].PM25.dropna().shape[0]
+        n = len(cities[city]['df'][['PM25','device_id']].dropna().device_id.unique())
+        stats = stats.append({'city':city, 'PM25':pm25, 'obs':obs, 'devices':n}, ignore_index = True)
+    print stats.sort_values('obs', ascending = False)
+# call(['open','{}/{}/{}/{}_{}_0000.png'.format('/Users/jakenoble/DSI/multiplot/plots/visIt','New_York_County','PM25','PM25','2016-07-01')])
+# call(['screencapture','-T','1','-R','175,121,645,623', '{}/{}/{}/{}_{}.png'.format('/Users/jakenoble/DSI/multiplot/images','New_York_County','PM25','PM25','2016-07-01')])
